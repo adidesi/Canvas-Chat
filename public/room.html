@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Lets Meet: Room Page</title>
+        <meta charset="UTF-8">
+        <meta name='viewport' content='width=device-width, user-scalable=no,
+              initial-scale=1, maximum-scale=1, minimum-scale=1'/>
+        <meta name="description" content="Virtual Whiteboard,  Room Page Of Virtual Whiteboard">
+        <meta name="author" content="Anuj Poddar, Rishabh Kedia, Sahil Patel">
+        <meta name="keywords" content="HTML5, Node.js, Virtual Whiteboard, Audio/Video, Chat, Drawing, Canvas">
+        <link rel="icon" href="img/favicon.ico">        
+        <link rel="stylesheet"  href="css/bootstrap.css">
+        <link rel="stylesheet"  href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrap-responsive.css">
+        <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+        <link rel="stylesheet" href="css/roomCSS.css">
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect();
+            var retrievedObjectJson = sessionStorage.getItem('room');
+            var retrievedObject = JSON.parse(retrievedObjectJson);
+            socket.emit('join', retrievedObject);
+
+            var canvas, ctx, fileLoader, fil, size, imageLoader, vid, vidsource, flag = false,
+                    prevX = 0,
+                    currX = 0,
+                    prevY = 0,
+                    currY = 0,
+                    dot_flag = false;
+
+            var x = "black",
+                    y = 2;
+
+            function init() {
+                canvas = document.getElementById('can');
+                ctx = canvas.getContext("2d");
+                w = canvas.width;
+                h = canvas.height;
+                imageLoader = document.getElementById('imagefile');
+                fileLoader = document.getElementById('fileInput');
+
+                //Listening TouchEvents
+                canvas.addEventListener('touchstart', function(m) {
+                    mobxy('start', m);
+                }, false);
+                canvas.addEventListener('touchend', function(m) {
+                    mobxy('end', m);
+                }, false);
+                canvas.addEventListener('touchcancel', function(m) {
+                    mobxy('end', m);
+                }, false);
+                canvas.addEventListener('touchmove', function(m) {
+                    mobxy('move', m);
+                }, false);
+
+                canvas.addEventListener("mousemove", function(e) {
+                    findxy('move', e);
+                }, false);
+                canvas.addEventListener("mousedown", function(e) {
+                    findxy('down', e);
+                }, false);
+                canvas.addEventListener("mouseup", function(e) {
+                    findxy('up', e);
+                }, false);
+                canvas.addEventListener("mouseout", function(e) {
+                    findxy('out', e);
+                }, false);
+
+                //image Listener
+                imageLoader.addEventListener('change', handleImage, false);
+
+                vid = document.getElementById("video");
+                vidsource = document.getElementById("videoSource");
+
+                vid.addEventListener('pause', function() {
+                    socket.emit('videoPause');
+                }, false);
+
+                vid.addEventListener('play', function() {
+                    socket.emit('videoPlay');
+                }, false);
+
+                fileLoader.addEventListener('change', handleFile, false);
+
+            }
+            function handleFile(e)
+            {
+                var reader = new FileReader();
+                /* reader.onload = function(evt) {
+                 fil=fileLoader.files[0];
+                 alert(fil.size);
+                 if(fil.size>20000000)
+                 alert("hello");
+                 };*/
+                reader.readAsDataURL(e.target.files[0]);
+                //alert(e.target.files[0].name);
+                if (e.target.files[0].size > 200000000)
+                {
+                    alert("File too big, should be less than 300 MB");
+                    alert(e.target.files[0].name);
+                    fileLoader.value = "";
+                }
+                
+            }
+            function checkFile()
+            {
+                if (fileLoader.value === "")
+                {
+                    alert("Please Select File First");
+                    return false;
+                }
+                return true;
+            }
+
+
+
+        </script>
+        <script src="js/canvasJS.js"></script>
+        <script src="js/videoJS.js"></script>
+        <script src="js/chatJS.js"></script>
+        <script src="js/fileJS.js"></script>
+        <script src="js/jquery-1.11.0.js"></script>
+        <script src="js/bootstrap.js"></script>
+    </head>
+    <body onload="init()">
+        <div class="container" style="width:100%">
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title" contenteditable="false">&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;Choose Color&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Eraser&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thickness &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;Clear&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Upload Image &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;Upload &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search&nbsp;&nbsp;&nbsp;</h4>
+                    </div>
+                </div>
+                <a href="Home_page.html"> <img class="thick" src="img/HomeButton.png" alt="HomeButton" style="position:absolute;top:7%;left:0.7%;"></a>
+
+                <div style="position:absolute;top:7%;left:4%;" id="black" onclick="color(this)">  <button type="button" class="btn btn-xs btn-black">&nbsp;Black</button></div>
+                <div style="position:absolute;top:7%;left:8%;" id="red" onclick="color(this)"> <button type="button" class="btn btn-xs btn-danger">Red&nbsp;</button></div>
+                <div style="position:absolute;top:7%;left:11.5%;" id="yellow" onclick="color(this)"><button type="button" class="btn btn-xs btn-yellow">Yellow&nbsp;&nbsp;</button></div> 
+                <div style="position:absolute;top:11%;left:4%;" id="green" onclick="color(this)"> <button type="button" class="btn btn-xs btn-success">Green</button></div>
+                <div style="position:absolute;top:11%;left:8%;" id="blue" onclick="color(this)">  <button type="button" class="btn btn-xs btn-primary">Blue</button></div>
+                <div style="position:absolute;top:11%;left:11.5%;" id="orange" onclick="color(this)"> <button type="button" class="btn btn-xs btn-warning">Orange</button></div>
+
+                <div style="position:absolute;top:6.5%;left:18%;" id="white" onclick="color(this)"><img class="thick" src="img/eraser.png" alt="eraser"></div>
+
+                <div style="position:absolute;top:7.75%;left:25%;" id="1" onclick="lineW(this)"> <img class="thick" src="img/Thickness-1.jpg" alt="Thickness1"> </div>
+                <div style="position:absolute;top:7.75%;left:27%;" id="3" onclick="lineW(this)"> <img class="thick" src="img/Thickness-3.jpg" alt="Thickness3"></div>
+                <div style="position:absolute;top:7.5%;left:29.5%;" id="6" onclick="lineW(this)"> <img class="thick" src="img/Thickness-6.jpg" alt="Thickness6"></div>
+
+                <div style="position:absolute;top:7%;left:35%;" id="clr" onclick="erase()" > <img class="thick" src="img/reset.png.jpg" alt="reset"></div>
+
+
+                <div style="position:absolute;top:7.5%;left:42.5%;"> <img src="img/image-icon.jpg" alt="ImageIcon"></div>
+                <div style="position:absolute;top:14.5%;left:40.5%;">   <input type="file"  id="imagefile" accept="image/*" ></div>
+
+                <div style="position:absolute;top:7.5%;left:54.5%;" data-toggle="modal" data-target="#myModal" contenteditable="false"><img class="thick" src="img/av.png.jpg" alt="Audio/Video"></div>
+
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close"  data-dismiss="modal" aria-hidden="true" >x</button>
+                                <h4 class="modal-title" id="myModalLabel">Select</h4>
+                            </div>
+                            <div class="modal-body">
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row">
+                                    <div class="form-group col-lg-8" style="padding-left: 80px" >
+                                        <form action="http://127.0.0.1:4000/upload1.html" onsubmit="return checkFile()" enctype="multipart/form-data" method="post" target="_blank">
+
+                                            <input type="file" name="upload" id="fileInput">
+                                            <sub>Extensions: .mp4, .mp3, .pdf, .odt, .odp, .ods</sub>
+                                            <br><br><br>
+                                            <button type="submit" value="Upload">Upload</button>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- No NEED TO COPY CONTENT FROM FILE ABC.TXT-->
+                <!--Tab Content start-->
+                <div class="col-lg-offset-6">
+                    <button class="btn btn-warning" style="position:absolute;top:8%;left:62%;" data-toggle="modal" data-target="#tabsDemoDialog"
+                            contenteditable="false">Search</button>
+                    <div class="modal fade" id="tabsDemoDialog" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close"  data-dismiss="modal" aria-hidden="true" >x</button>
+                                    <h4 class="modal-title" id="myModalLabel3">Search Audio/Video And Files</h4>
+                                </div>
+                                <div class="modal-body">
+
+                                    <ul class="nav nav-tabs" id="tabContent">
+                                        <li class="active"><a href="#avFiles" data-toggle="tab">Audio/Video Files</a></li>
+                                        <li><a href="#onlyFiles" data-toggle="tab">Files</a></li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="avFiles">
+
+                                            <input id="query" name="query" type="text" class="form-control input-sm" placeholder="..."  contenteditable="false">
+                                            <br>
+                                            <br>
+                                            <div class="modal-footer">
+                                                <button type="button" style="float: right;" class="btn btn-primary" data-dismiss="modal" onclick="search()">Search</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-pane" id="onlyFiles">
+                                            <input id="queryFile" name="queryFile" type="text" class="form-control input-sm" placeholder="..."  contenteditable="false">                       
+                                            <br>
+                                            <br>
+                                            <div class="modal-footer">
+                                                <button type="button"  style="float: right;" class="btn btn-primary" data-dismiss="modal" onclick="searchFile()">Search</button>
+                                            </div>
+                                        </div> 
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Tab Content Ends-->
+                <img src="img/Wb.png" alt="Whiteboard" width="915" height="550" style="position:absolute;top:19%;left:0%;">
+                <canvas id="can" width="875" height="497" style="position:absolute;top:22%;left:1.8%;">Canvas Not Supported </canvas>
+
+                <video id="video" width="370" height="240" controls style="position:absolute;top:9%;left:71.2%;">
+                    <source id="videoSource" src="" type="video/mp4" >
+                </video>
+            </div>
+        </div>
+
+        <div class="container" style="position:absolute;top:45%;left:71.5%;">   
+            <div class="row">
+                <div class="col-md-4">
+
+                    <div class="panel panel-primary" >
+                        <div class="panel-heading"> <span class="glyphicon glyphicon-comment"></span> Chat
+
+                        </div>
+
+                        <div class="panel-body"  >
+                            <ul class="chat" id="chat">                        
+
+                            </ul>
+                        </div>
+
+                        <div class="panel-footer">
+                            <div class="input-group"> <span class="input-group-btn">
+                                    <button class="btn btn-warning btn-sm" id="btn-chat" onclick="chatMessage()">
+                                        Send</button>
+                                </span>
+
+                                <input id="btn-input-xs" type="text" class="form-control input-sm" placeholder="Type your message here..."
+                                       contenteditable="false">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
