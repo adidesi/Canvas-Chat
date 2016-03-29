@@ -4,8 +4,11 @@
   "description": "Upgrade on Lets Meet Project",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "npm-run-all --parallel mongostart nodestart ",
+    "nodestart": "node index.js",
+    "mongostart": "mongod",
+    "nodemonstart": "nodemon index.js",
+    "dev": "npm-run-all --parallel mongostart nodemonstart",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -22,7 +25,9 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.13.4",
+    "formidable": "^1.0.17",
     "mongodb": "^2.1.7",
+    "mongoose": "^4.4.8",
     "path": "^0.12.7",
     "socket.io": "^1.4.5"
   },
@@ -33,5 +38,6 @@
   "bugs": {
     "url": "https://github.com/adidesi/Canvas-Chat/issues"
   },
-  "homepage": "https://github.com/adidesi/Canvas-Chat#readme"
+  "homepage": "https://github.com/adidesi/Canvas-Chat#readme",
+  "devDependencies": {}
 }
