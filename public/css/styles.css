@@ -1,0 +1,26 @@
+.btn:focus, .upload-btn:focus{
+  outline: 0 !important;
+}
+
+.upload-btn {
+  color: #ffffff;
+  background-color: #F89406;
+  border: none;
+}
+
+.uploadfile-btn:hover,
+.upload-btn:focus,
+.upload-btn:active,
+.upload-btn.active {
+  color: #ffffff;
+  background-color: #FA8900;
+  border: none;
+}
+
+#upload-file-input {
+  display: none;
+}
+
+#upload-image-input {
+  display: none;
+}

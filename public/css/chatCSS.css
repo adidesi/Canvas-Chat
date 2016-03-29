@@ -1,0 +1,74 @@
+/*CHAT CSS*/
+#chat-box{
+	margin-right: 1%;
+	position: fixed;
+	bottom: -1%;
+	right: 0%;
+	background-color: white;
+	width:30%;
+	max-height: 50%;
+}
+#chat-head{
+	background-color: #0277bd ;
+	padding: 2%;
+	color: white;
+	height: 15%;
+	cursor: pointer;
+}
+#chat-screen{
+	height: 50%;
+}
+#chat-body{
+	padding-top: 2%;
+	padding-left: 2%;
+	padding-right: 2%;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+#chat-footer{
+	margin-top: 5%;
+	height: 20%;
+	border-top: 5% solid #0277bd  ;
+}
+#chat-input{
+	background-color: #80deea ;
+	width:75%;
+	border: transparent;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;  
+}
+#chat-send-btn{
+	background-color: #0277bd ;
+}
+i{
+	margin-right: 2%;
+}
+.msgHEAD{
+	border: 1px solid green;
+}
+.msgIN{
+	border: 1px solid red;
+}
+.msgOUT{
+	border: 1px solid blue;
+}
+/*POP UP CSS*/
+.myPopUp{
+	margin-right: 1%;
+	position: fixed;
+	top: 10%;
+	right: 40%;
+	background-color: orange;
+	width:30%;
+	max-height: 50%;
+	padding: 0% 2% 2% 2%;
+	border-radius: 10%;
+}
+
+.myPopUp-header{
+	text-align: center;
+}
+.myPopUp-footer{
+	text-align: center;
+}
