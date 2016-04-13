@@ -37,7 +37,7 @@ $('#upload-file-input').on('change', function(){
     }
 
     $.ajax({
-      url: '/upload',
+      url: '/uploadfile',
       type: 'POST',
       data: formData,
       processData: false,
@@ -135,7 +135,7 @@ $('#upload-image-input').on('change', function(){
             // once the upload reaches 100%, set the progress bar text to done
             if (percentComplete === 100) {
               $('#image-progress-text').text('Image upload : Done');
-              socket.emit('imageSent',{filename: files[0].name});
+              socket.emit('imageSent',{filename: files[0].name, roomid:roomid});
             }
           }
         }, false);
@@ -144,6 +144,7 @@ $('#upload-image-input').on('change', function(){
     });
     }else{
       alert('Upload Single Image File');
+      return;
     }   
   }
 });

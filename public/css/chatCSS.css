@@ -1,5 +1,5 @@
 /*CHAT CSS*/
-#chat-box{
+#float-box{
 	margin-right: 1%;
 	position: fixed;
 	bottom: -1%;
@@ -71,4 +71,38 @@ i{
 }
 .myPopUp-footer{
 	text-align: center;
+}
+
+/*FILE BOX*/
+#file-head{
+	background-color: #0277bd ;
+	padding: 2%;
+	color: white;
+	height: 15%;
+	cursor: pointer;
+}
+#file-screen{
+	height: 50%;
+}
+#file-body{
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+.file-item{
+	padding-left: 5%;
+	padding-bottom: 2%;
+}
+#file-footer{
+	height: 20%;
+}
+#file-input{
+	background-color: #80deea ;
+	width:75%;
+	border: transparent;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;  
+}
+#file-search-btn{
+	background-color: #0277bd ;
 }

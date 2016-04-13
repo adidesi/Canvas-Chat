@@ -92,7 +92,7 @@ and open the template in the editor.
                         <button class="waves-effect waves-light btn-small color-swatch" style="background-color: black">*</button>
                     </li>
                     <li>
-                        <button class="waves-effect waves-light btn-small color-swatch" >Save</button>
+                        <a class="waves-effect waves-light btn-small color-swatch" id="btnSave">Save</a>
                     </li>
                     <li>
                         <a class="modal-trigger waves-effect waves-light btn" id="openFileUpload">Upload File</a>
@@ -109,7 +109,6 @@ and open the template in the editor.
             <canvas id = "paper"  width="900" height="600">
                 Your browser doesnt support Canvas
             </canvas>
-            
             <div class="myPopUp" id="fileUploadPopUp">
                 <div id="file-text">
                     Upload your file. Click on upload button
@@ -146,7 +145,22 @@ and open the template in the editor.
                 </div>
             </div>
 
-            <div id="chat-box">
+            <div id="float-box">
+                <div id="file-head">
+                    <span><i class="material-icons">view_agenda</i>Filebox</span>
+                </div>
+                <div id="file-screen">
+                    <div class="file-body">
+                        <ul>
+                            <li><a class = "file-item" href="downloads/TT.pdf">TT.pdf</a></li>
+                            <li><a class = "file-item" href="downloads/TT.pdf">TT.pdf</a></li>
+                        </ul>
+                    </div>
+                    <div id="file-footer">
+                            <input id="file-input" type="text" placeholder="Enter File Name..." contenteditable="false">
+                            <button class="btn waves-effect waves-light" id='file-search-btn'><i class="material-icons">send</i></button>
+                    </div>
+                </div>
                 <div id="chat-head">
                     <span><i class="material-icons">view_agenda</i>Chatbox</span>
                 </div>

@@ -11,7 +11,9 @@ var username,
 	defaultRadius = 10,
 	minRad = 0.5,
 	maxRad = 50,
-	radInterval = 5;
+	radInterval = 5,
+	roomid,username;
+
 var socket = io.connect();
 
 
@@ -27,18 +29,15 @@ socket.on('clearCanvas', function (data) {
 });		
 socket.on("imageChange", function(data) {
 	if (data.image) {
-		console.log('gere');
 		var img = new Image();
 		img.src = 'data:image/jpeg;base64,' + data.buffer;
 		ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
 	}
 });
-socket.on('serverImage',function(data){
-	console.log(data.here);
-})
 window.addEventListener('load', function(event) {
-	var roomid = sessionStorage.getItem('roomid');
-	username = sessionStorage.getItem('username');
+
+	roomid = window.location.href.split("#")[1];
+	username = window.location.href.split("#")[2];
 	
 	socket.emit('joinRoom',{roomid : roomid, username : username});
 
@@ -67,7 +66,7 @@ window.addEventListener('load', function(event) {
     	_isEraser = false;
     });
     document.getElementById('btnClear').addEventListener('click', function(){
-    	socket.emit('canvasClear');
+    	socket.emit('canvasClear',{roomid:roomid});
     });
 
     var swatches = document.getElementsByClassName('color-swatch');
@@ -76,6 +75,12 @@ window.addEventListener('load', function(event) {
 	    	setColor(event.target.style.backgroundColor);
     	});
     }
+
+    document.getElementById('btnSave').addEventListener('click', function(){
+    	var dataURL = ctx.canvas.toDataURL('image/png');
+    	document.getElementById('btnSave').href = dataURL;
+    	document.getElementById('btnSave').target = "_blank"
+    });
 
     erasSpan = document.getElementById('erasSpan');
     radSpan = document.getElementById('radSpan');
@@ -164,6 +169,7 @@ function sendData(event,drawing){
 	}
 	if($.now() - lastEmit > 30){
 		socket.emit('mousemove',{
+			'roomid': roomid,
 			'event':{	
 			'clientX': event.pageX,
 			'clientY': event.pageY

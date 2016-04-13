@@ -1,9 +1,13 @@
 $(document).ready(function(){
     $('.myPopUp').hide();
     $('#chat-screen').hide();
+    $('#file-screen').hide();
 
     $('#chat-head').click(function(){
         $('#chat-screen').slideToggle();
+    });
+    $('#file-head').click(function(){
+        $('#file-screen').slideToggle();
     });
 
     $('#chat-send-btn').click(function(){
@@ -14,6 +18,7 @@ $(document).ready(function(){
             chatbody.innerHTML += newMessageElement;
             socket.emit('clientMessage',
                 {
+                    roomid : roomid,
                     msg:$('#chat-input').val(),
                     user:'HE'
                 });
@@ -29,13 +34,4 @@ socket.on('serverMessage', function(data) {
     chatbody.innerHTML += newMessageElement;
 });
 
-socket.on('login', function() {
-    var loginObjectJson = sessionStorage.getItem('loginname');
-    var username = JSON.parse(loginObjectJson);
-    while(username===null || username==="")
-    {
-        username = prompt('What username would you like to use?');
-    }
-    socket.emit('login', username);
-});
 

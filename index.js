@@ -6,6 +6,7 @@ var path = require('path');
 var mongoose = require('mongoose');
 var fs = require('fs');
 var formidable = require('formidable');
+var shortid = require('shortid');
 
 var port = process.env.PORT || 20203;
 
@@ -21,6 +22,7 @@ app.use('/font', express.static(path.join(__dirname,'./public','/fonts')));
 app.use('/font-awesome', express.static(path.join(__dirname,'./public','/font-awesome')));
 app.use('/js', express.static(path.join(__dirname,'./public','/js')));
 app.use('/img', express.static(path.join(__dirname,'./public','/img')));
+app.use('/downloads', express.static(path.join(__dirname,'./public','/uploads')));
 
 //mongoose Models
 mongoose.model('roomid', {room: Number, roomcount:  Number});
@@ -34,7 +36,7 @@ app.get('/', function(req, res){
 app.get('/room', function(req, res){
 	res.sendFile('custom-room.html',{root:path.join(__dirname,'./public')});
 });
-app.post('/upload', function(req, res){
+app.post('/uploadfile', function(req, res){
   // create an incoming form object
   var form = new formidable.IncomingForm();
   // specify that we want to allow the user to upload multiple files in a single request
@@ -98,48 +100,63 @@ mongoose.connect('mongodb://127.0.0.1/canvaschatlist', function(err, db) {
 	console.log("Connected to mongoDB successfully!");
 	io.on('connection', function(socket){
 		console.log("User connected with socketid: " + socket.id);
+    
     socket.on('mousemove', function (data) {
     // This line sends the event (broadcasts it) to everyone except the originating client.
-      socket.broadcast.emit('moving', data);
+      socket.broadcast.to(data.roomid).emit('moving', data);
     });
+
     socket.on('canvasClear', function (data) {
     // This line sends the event (broadcasts it) to everyone including the originating client.
-      socket.nsp.emit('clearCanvas', data);
+      io.sockets.in(data.roomid).emit('clearCanvas', data);
+
     });
+
     socket.on('joinRoom',function(data){
-      console.log(data);
+      console.log('joinRoom data : ' + data.roomid);
+      socket.join(data.roomid);
     });
+
     socket.on('createRoom',function(){
-      var roomid = 0;
+      var roomid = shortid.generate();
+      console.log('Room Created : ' + roomid);
       //Increment room and roomcount from roomid
 
 
       //log and send the current roomid to the user
 
-      socket.emit('roomCreated', {roomid : roomid})
-      console.log('Room Created' + roomid);
+      socket.emit('roomCreated', {roomid : roomid});
     });
+
     socket.on('imageSent', function (data) {
-      console.log("recieved an image");
+      console.log("recieved an image : "+data.filename);
 
       fs.stat(path.join(__dirname, './public','uploads',data.filename), function(err,stats){
+        if(err){
+          console.log(err);
+          return;
+        }
         if(stats.isFile()){
           console.log('image present');
           fs.readFile(path.join(__dirname, './public','uploads',data.filename), function(err, buf){
             // it's possible to embed binary data
             // within arbitrarily-complex objects
             var tempString =  buf.toString('base64');
-            socket.nsp.emit('serverImage',{here:'here'});
-            socket.nsp.emit('imageChange', { image: true,
-                                   buffer:tempString});
+            io.sockets.in(data.roomid).emit('imageChange', { image: true,buffer:tempString});
             console.log('image file is initialized');
           });
         }
       });
     });
+
     socket.on('clientMessage',function(data){
-      socket.broadcast.emit('serverMessage', data);
+      socket.broadcast.to(data.roomid).emit('serverMessage', data);
     });
+
+    socket.on('disconnect',function(){
+      console.log('User is disconnected : '+socket.id);
+    });
+
     socket.on('mistrial',function(){
       console.log('mishere');
     });
