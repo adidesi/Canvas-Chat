@@ -1,8 +1,6 @@
 var username,
 	lastEmit,
 	ctx,
-	radSpan,
-	erasSpan,
 	_isEraser = false,
 	_color = 'black',
 	_radius = 10,
@@ -82,9 +80,6 @@ window.addEventListener('load', function(event) {
     	document.getElementById('btnSave').target = "_blank"
     });
 
-    erasSpan = document.getElementById('erasSpan');
-    radSpan = document.getElementById('radSpan');
-
     initCanvas();
 });
 
@@ -145,14 +140,6 @@ function setRadius(newRad,isEraserRadius){
 		newRad = minRad;
 	else if(newRad>maxRad)
 		newRad = maxRad;
-	if(isEraserRadius){
-		_erasradius = newRad;
-		erasSpan.innerHTML = _erasradius;
-	}
-	else{
-		_radius = newRad;
-		radSpan.innerHTML = _radius;
-	}
 }
 
 function setColor(color){
