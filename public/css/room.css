@@ -4,22 +4,13 @@
 	-moz-user-select:none;
 	-ms-user-select:none;
 }
-body{
-	background: #e3f2fd;
-	margin: 0;
-}
+
 #paper{
 	margin-left: 1%;
 	box-sizing: padding-box;
 	background: white;
 	display: block;
 	cursor: crosshair;
-	border:5px dashed yellow;
+	
 }
 
-.radList{
-	background: #304FFE;
-}
-.eraList{
-	background: #FF6F00;
-}
