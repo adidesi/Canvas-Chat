@@ -41,31 +41,31 @@ window.addEventListener('load', function(event) {
 	
 	socket.emit('joinRoom',{roomid : roomid, username : username});
 
-    ctx = document.getElementById('paper').getContext('2d');
+    ctx = $('#paper')[0].getContext('2d');
 
-    document.getElementById('decrRadius').addEventListener('click', function(){
+    $('#decrRadius').click(function(){
     	setRadius(_radius - radInterval, false);
     });
-	document.getElementById('incrRadius').addEventListener('click', function(){
+	$('#incrRadius').click(function(){
     	if(_radius==0.5)
     		_radius=0;
     	setRadius(_radius + radInterval, false);
     });
-    document.getElementById('decrEraser').addEventListener('click', function(){
+    $('#decrEraser').click(function(){
     	setRadius(_erasradius - radInterval, true);
     });
-	document.getElementById('incrEraser').addEventListener('click', function(){
+	$('#incrEraser').click(function(){
     	if(_erasradius==0.5)
     		_erasradius=0;
     	setRadius(_erasradius + radInterval, true);
     });
-    document.getElementById('btnEraser').addEventListener('click', function(){
+    $('#btnEraser').click(function(){
     	_isEraser = true;
     });
-    document.getElementById('btnRadius').addEventListener('click', function(){
+    $('#btnRadius').click(function(){
     	_isEraser = false;
     });
-    document.getElementById('btnClear').addEventListener('click', function(){
+    $('#btnClear').click(function(){
     	socket.emit('canvasClear',{roomid:roomid});
     });
 
@@ -76,7 +76,7 @@ window.addEventListener('load', function(event) {
     	});
     }
 
-    document.getElementById('btnSave').addEventListener('click', function(){
+    $('#btnSave').click(function(){
     	var dataURL = ctx.canvas.toDataURL('image/png');
     	document.getElementById('btnSave').href = dataURL;
     	document.getElementById('btnSave').target = "_blank"
@@ -116,10 +116,12 @@ function initCanvas(){
     ctx.canvas.addEventListener('mouseup', function(event){
     	drawing = false;
     	ctx.beginPath();
+    	sendData(event,drawing);
     });
     ctx.canvas.addEventListener('mouseleave', function(event){
     	drawing = false;
     	ctx.beginPath();
+    	sendData(event,drawing);
     });
 }
 

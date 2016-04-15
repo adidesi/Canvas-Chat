@@ -21,6 +21,8 @@ $('#upload-file-btn').on('click', function (){
 
 $('#upload-file-input').on('change', function(){
 
+  socket.emit('preFileUpload',{roomid:roomid});
+
   var files = $(this).get(0).files;
 
   if (files.length > 0){
@@ -101,10 +103,13 @@ $('#close-image-btn').click(function(){
 
 $('#upload-image-input').on('change', function(){
 
+  socket.emit('preImageUpload',{roomid:roomid});
+
   var files = $(this).get(0).files;
 
   if(files.length > 0){
-    if(files.length <= 1 && files[0].type.match(/image\/.+/i)){
+    if(files.length <= 1){
+      console.log(files[0]);
       var formData = new FormData();
       formData.append('uploads', files[0], files[0].name);
       $.ajax({

@@ -65,7 +65,7 @@ app.post('/uploadimage', function(req, res){
   // specify that we want to allow the user to upload multiple files in a single request
   form.multiples = true;
   // store all uploads in the /uploads directory
-  form.uploadDir = path.join(__dirname, './public', '/uploads');
+  form.uploadDir = path.join(__dirname, './public', '/uploads', '/canvasimages');
   // every time a file has been uploaded successfully,
   // rename it to it's orignal name
   form.on('file', function(field, file) {
@@ -108,12 +108,13 @@ mongoose.connect('mongodb://127.0.0.1/canvaschatlist', function(err, db) {
 
     socket.on('canvasClear', function (data) {
     // This line sends the event (broadcasts it) to everyone including the originating client.
-      io.sockets.in(data.roomid).emit('clearCanvas', data);
+      io.in(data.roomid).emit('clearCanvas', data);
 
     });
 
     socket.on('joinRoom',function(data){
       console.log('joinRoom data : ' + data.roomid);
+      socket.emit('roomJoined', data);
       socket.join(data.roomid);
     });
 
@@ -121,7 +122,7 @@ mongoose.connect('mongodb://127.0.0.1/canvaschatlist', function(err, db) {
       var roomid = shortid.generate();
       console.log('Room Created : ' + roomid);
       //Increment room and roomcount from roomid
-
+      //TODO MONGOO
 
       //log and send the current roomid to the user
 
@@ -131,18 +132,18 @@ mongoose.connect('mongodb://127.0.0.1/canvaschatlist', function(err, db) {
     socket.on('imageSent', function (data) {
       console.log("recieved an image : "+data.filename);
 
-      fs.stat(path.join(__dirname, './public','uploads',data.filename), function(err,stats){
+      fs.stat(path.join(__dirname, './public', '/uploads', '/canvasimages', data.filename), function(err,stats){
         if(err){
           console.log(err);
           return;
         }
         if(stats.isFile()){
           console.log('image present');
-          fs.readFile(path.join(__dirname, './public','uploads',data.filename), function(err, buf){
+          fs.readFile(path.join(__dirname, './public', '/uploads', '/canvasimages', data.filename), function(err, buf){
             // it's possible to embed binary data
             // within arbitrarily-complex objects
             var tempString =  buf.toString('base64');
-            io.sockets.in(data.roomid).emit('imageChange', { image: true,buffer:tempString});
+            io.in(data.roomid).emit('imageChange', { image: true,buffer:tempString});
             console.log('image file is initialized');
           });
         }
@@ -155,6 +156,7 @@ mongoose.connect('mongodb://127.0.0.1/canvaschatlist', function(err, db) {
 
     socket.on('disconnect',function(){
       console.log('User is disconnected : '+socket.id);
+      // console.log(io.sockets.manager.roomClients[socket.id]);
     });
 
     socket.on('mistrial',function(){

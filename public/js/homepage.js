@@ -5,13 +5,15 @@ window.addEventListener('load', function(event) {
 
 	document.getElementById('joinRoombtn').addEventListener('click', function(){
 		username=prompt("Enter User Name");
-		roomid = prompt("Enter Room id");
-		if(roomid!=null&&roomid!=""&&username!=null&&username!=""){
-			socket.emit('joinRoom',{
-				roomid : roomid ,
-				username: username
-			});
-			window.open("room#"+roomid+"#"+username, "_self");
+		if(username!=null&&username!=""){
+			roomid = prompt("Enter Room id");
+			if(roomid!=null&&roomid!=""){
+				socket.emit('joinRoom',{
+					roomid : roomid ,
+					username: username
+				});
+
+			}
 		}
 	});
 	document.getElementById('createRoombtn').addEventListener('click', function(){
@@ -28,5 +30,9 @@ window.addEventListener('load', function(event) {
 		roomid = data.roomid;
 		console.log('heere');
 		window.open("room#"+roomid+"#"+username, "_self");
+	});
+
+	socket.on('roomJoined',function(data){
+		window.open("room#"+data.roomid+"#"+data.username, "_self");
 	});
 });
