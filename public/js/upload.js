@@ -44,7 +44,6 @@ $('#file-upload-btn').on('click', function(){
             
             // once the upload reaches 100%, set the progress bar text to done
             if (percentComplete === 100) {
-              console.log(obj);
               socket.emit('fileSent',obj);
             }
           }
@@ -67,7 +66,6 @@ $('#image-upload-btn').on('click', function(){
 
   if(files.length > 0){
     if(files.length <= 1 && files[0].type.match('image.*')){
-      console.log(files[0]);
       var formData = new FormData();
       formData.append('uploads', files[0], files[0].name);
       $.ajax({

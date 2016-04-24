@@ -36,4 +36,8 @@ $(document).ready(function(){
 	socket.on('roomJoined',function(data){
 		window.open("room#"+data.roomid+"#"+data.username, "_self");
 	});
+
+	socket.on('errorMessage',function(data){
+		//todo
+	});
 });

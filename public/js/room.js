@@ -26,13 +26,24 @@ socket.on('moving', function (data) {
 socket.on('clearCanvas', function (data) {
 	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 });		
-socket.on("imageChange", function(data) {
+socket.on('imageChange', function(data) {
 	if (data.image) {
 		var img = new Image();
 		img.src = 'data:image/jpeg;base64,' + data.buffer;
 		ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
 	}
 });
+socket.on('fileRecieved',function(data){
+    for(var i = 0 ; i<data.filenames.length; i++){
+        $('#slide-out').append(
+            "<li class=\"fixed black-text\"><a href=\"downloads/"+
+            data.filenames[i]+"\" target=\"_blank\">"+data.filenames[i]
+            +"</a></li>")
+    } 
+    console.log(data.filenames);
+});
+
+
 $( document ).ready(function(){
     $(".button-collapse").sideNav();
 	$(".dropdown-button").dropdown({ belowOrigin: true,hover: true });

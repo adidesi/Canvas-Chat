@@ -1,4 +1,4 @@
 #!/bin/bash
 
 sudo mongod &
-sudo npm run nodestart
+sudo npm run nodemonstart
