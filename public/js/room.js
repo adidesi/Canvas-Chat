@@ -10,7 +10,8 @@ var username,
 	minRad = 0.5,
 	maxRad = 50,
 	radInterval = 5,
-	roomid,username;
+	roomid,
+    username;
 
 var socket = io.connect();
 

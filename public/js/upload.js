@@ -9,11 +9,11 @@ $('#file-upload-btn').on('click', function(){
     // create a FormData object which will be sent as the data payload in the
     // AJAX request
     var formData = new FormData();
-
+    var obj = {'roomid':roomid, 'filenames': []};
     // loop through all the selected files and add them to the formData object
     for (var i = 0; i < files.length; i++) {
       var file = files[i];
-
+      obj.filenames.push({filename: files[i].name});
       // add the files to formData object for the data payload
       formData.append('uploads[]', file, file.name);
     }
@@ -40,13 +40,12 @@ $('#file-upload-btn').on('click', function(){
             percentComplete = parseInt(percentComplete * 100);
 
             // update the Bootstrap progress bar with the new percentage
-            $('#file-progress-text').text('File upload : ' + percentComplete + '%');
             $('#file-progress-bar').width(percentComplete + '%');
             
             // once the upload reaches 100%, set the progress bar text to done
             if (percentComplete === 100) {
-              $('#file-progress-text').text('File upload : Done');
-              socket.emit('fileSent',{filename: files[0].name, roomid:roomid});
+              console.log(obj);
+              socket.emit('fileSent',obj);
             }
           }
         }, false);
@@ -93,12 +92,10 @@ $('#image-upload-btn').on('click', function(){
             percentComplete = parseInt(percentComplete * 100);
 
             // update the Bootstrap progress bar with the new percentage
-            $('#image-progress-text').text('Image upload : ' + percentComplete + '%');
             $('#image-progress-bar').width(percentComplete + '%');
             
             // once the upload reaches 100%, set the progress bar text to done
             if (percentComplete === 100) {
-              $('#image-progress-text').text('Image upload : Done');
               socket.emit('imageSent',{filename: files[0].name, roomid:roomid});
             }
           }
