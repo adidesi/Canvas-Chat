@@ -2,10 +2,10 @@ var username,
 	lastEmit,
 	ctx,
 	_isEraser = false,
-	_color = 'black',
+	_color = '#4caf50',
 	_radius = 10,
 	_erasradius = 10,
-	defaultColor = 'black',
+	defaultColor = '#4caf50',
 	defaultRadius = 10,
 	minRad = 0.5,
 	maxRad = 50,
@@ -32,31 +32,18 @@ socket.on("imageChange", function(data) {
 		ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
 	}
 });
-window.addEventListener('load', function(event) {
+$( document ).ready(function(){
+    $(".button-collapse").sideNav();
+	$(".dropdown-button").dropdown({ belowOrigin: true,hover: true });
+    $('.modal-trigger').leanModal();
 
-	roomid = window.location.href.split("#")[1];
+    roomid = window.location.href.split("#")[1];
 	username = window.location.href.split("#")[2];
 	
 	socket.emit('joinRoom',{roomid : roomid, username : username});
 
     ctx = $('#paper')[0].getContext('2d');
 
-    $('#decrRadius').click(function(){
-    	setRadius(_radius - radInterval, false);
-    });
-	$('#incrRadius').click(function(){
-    	if(_radius==0.5)
-    		_radius=0;
-    	setRadius(_radius + radInterval, false);
-    });
-    $('#decrEraser').click(function(){
-    	setRadius(_erasradius - radInterval, true);
-    });
-	$('#incrEraser').click(function(){
-    	if(_erasradius==0.5)
-    		_erasradius=0;
-    	setRadius(_erasradius + radInterval, true);
-    });
     $('#btnEraser').click(function(){
     	_isEraser = true;
     });
@@ -67,6 +54,34 @@ window.addEventListener('load', function(event) {
     	socket.emit('canvasClear',{roomid:roomid});
     });
 
+
+    $('#btnSave').click(function(){
+        var dataURL = ctx.canvas.toDataURL('image/png');
+        $('#btnSave').get(0).href = dataURL;
+        $('#btnSave').get(0).target = "_blank"
+    });
+
+    $('#incrRadius').click(function(){
+        if(_radius==0.5)
+            _radius=0;
+        setRadius(_radius + radInterval, false);
+    });
+
+    $('#decrRadius').click(function(){
+        setRadius(_radius - radInterval, false);
+    });
+
+    $('#incrEraser').click(function(){
+        if(_erasradius==0.5)
+            _erasradius=0;
+        setRadius(_erasradius + radInterval, true);
+    });
+
+    $('#decrEraser').click(function(){
+        setRadius(_erasradius - radInterval, true);
+    });
+
+
     var swatches = document.getElementsByClassName('color-swatch');
     for(var i = 0, n = swatches.length; i<n ;i++){
     	swatches[i].addEventListener('click', function(event){
@@ -74,11 +89,6 @@ window.addEventListener('load', function(event) {
     	});
     }
 
-    $('#btnSave').click(function(){
-    	var dataURL = ctx.canvas.toDataURL('image/png');
-    	document.getElementById('btnSave').href = dataURL;
-    	document.getElementById('btnSave').target = "_blank"
-    });
 
     initCanvas();
 });
@@ -140,6 +150,14 @@ function setRadius(newRad,isEraserRadius){
 		newRad = minRad;
 	else if(newRad>maxRad)
 		newRad = maxRad;
+    if(isEraserRadius){
+        _erasradius = newRad;
+        erasSpan.innerHTML = _erasradius;
+    }
+    else{
+        _radius = newRad;
+        radSpan.innerHTML = _radius;
+    }
 }
 
 function setColor(color){

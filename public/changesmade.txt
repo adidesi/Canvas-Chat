@@ -1,4 +1,0 @@
-<button class="waves-effect waves-light btn-small radList" id = "incrRadius">+</button>
-<button class="waves-effect waves-light btn-small radList" id = "decrRadius">-</button>
-here is changed to
-<li><span><input type="number" value="5" class="radiusvalue"></span></li>

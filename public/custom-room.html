@@ -16,7 +16,6 @@ and open the template in the editor.
         <!-- links to our css files -->
         <link type = "text/css" rel="stylesheet" href="css/room.css">
         <link type = "text/css" rel="stylesheet" href="css/chatCSS.css">
-        <link type = "text/css" rel="stylesheet" href="css/styles.css">
 
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -31,120 +30,98 @@ and open the template in the editor.
         <script src="js/chatJS.js"></script>
     </head>
     <body background="picts/backwood.jpg">
-	
-
-	<div class="navbar-fixed">
-			<nav class="black" role="navigation">
-    
-				<div class="nav-wrapper container">
-                                    
-					<a target="_top"><h5 class="center-align white-text">Canvas Chat</h5></a>    
-				</div>
-  
-			</nav>
-  
-		</div>
 
 	<nav class="green">
     		<div class="nav-wrapper">
       
       			<ul id="nav-mobile" class="left hide-on-med-and-down">
-				<li>
-                        		<a href="/">HOME</a>
-                    		</li>
+				<li><a href="/"><b>CANVAS CHAT</b></a></li>
 
 				<li><a id="btnClear">CLEAR</a></li>
         			
 				<li>
-					<a id="btnRadius" class="radList dropdown-button" href="#!" data-activates="radiusdropdown">RADIUS</a>
+					<a id="btnRadius" class="radList dropdown-button"  data-activates="radiusdropdown">RADIUS</a>
 					<ul id="radiusdropdown" class="dropdown-content">
- 						<li><span><input type="number" value="5" class="radiusvalue"></span></li>
+ 						<li><span><input type="number" value="5" id="radiusvalue"></span></li>
 					</ul>
 				</li>
 				
 				<li>
-					<a id="btnEraser" class="eraList dropdown-button" href="#!" data-activates="eraserdropdown">ERASER</a>
+					<a id="btnEraser" class="eraList dropdown-button"  data-activates="eraserdropdown">ERASER</a>
 					<ul id="eraserdropdown" class="dropdown-content">
- 						<li><span><input type="number" value="5" class="eraservalue"></span></li>
+ 						<li><span><input type="number" value="5" id="eraservalue"></span></li>
 					</ul>
 				</li>
 				
 				<li><a>COLORS</a></li>
 				
-				<li><a class="btnSave">SAVE</a></li>
+				<li><a id="btnSave">SAVE</a></li>
 				
 				<li> <a id="openFileUpload" href="#fileuploadmodal" class="modal-trigger">UPLOAD FILE</a></li>
 				<!-- Modal Structure -->
   				<div id="fileuploadmodal" class="modal">
-    					<div class="modal-content green-text">
-      						<h4>Upload File</h4>
-      						<br>
+					<div class="modal-content green-text">
+  						<h4>Upload File</h4>
+  						<br>
 						<div class="file-field input-field">
-      							<div class="btn green">
-        							<span>File</span>
-        							<input type="file" name="uploads[]" multiple>
-      							</div>
-      							<div class="file-path-wrapper">
-        							<input class="file-path validate" type="text" placeholder="Upload one or more files">
-      							</div>
-    						</div>
+  							<div class="btn green">
+    							<span>File</span>
+    							<input  id ="upload-file-input" type="file" name="uploads[]" multiple>
+  							</div>
+  							<div class="file-path-wrapper">
+    							<input class="file-path validate" type="text" placeholder="Upload one or more files">
+  							</div>
+						</div>
 
 						<div class="progress light-green lighten-2">
-                        				<div class="determinate green" id="file-progress-bar" role="progressbar" style="width: 70%"></div>
-                    				</div>
-						
-    					</div>
-    					<div class="modal-footer">
-						<a  class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-      						<a  class=" modal-action modal-close waves-effect waves-green btn-flat">Submit</a>
-    					</div>
+            				<div class="determinate green" id="file-progress-bar" role="progressbar"></div>
+        				</div>
+					</div>
+					<div class="modal-footer">
+                        <a  class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+						    <a  class="waves-effect waves-green btn-flat" id ="file-upload-btn">Submit</a>
+					</div>
   				</div>
 
 				<li> <a id="openImageUpload" href="#imageuploadmodal" class="modal-trigger">UPLOAD IMAGE</a></li>
 				<!-- Modal Structure -->
   				<div id="imageuploadmodal" class="modal">
-    					<div class="modal-content green-text">
-      						<h4>Upload Image</h4>
-      						<br>
-						<div class="file-field input-field">
-      							<div class="btn green">
-        							<span>File</span>
-        							<input type="file" name="uploads[]" multiple>
-      							</div>
-      							<div class="file-path-wrapper">
-        							<input class="file-path validate" type="text" placeholder="Upload one or more files">
-      							</div>
-    						</div>
-
+					<div class="modal-content green-text">
+  						<h4>Upload Image</h4>
+  						<br>
+				        <div class="file-field input-field">
+  							<div class="btn green">
+    							<span>Image</span>
+    							<input id = "upload-image-input" type="file" name="uploads[]" accept="image/*">
+  							</div>
+  							<div class="file-path-wrapper">
+    							<input class="file-path validate" type="text" placeholder="Upload one or more files">
+  							</div>
+						</div>
 						<div class="progress light-green lighten-2">
-                        				<div class="determinate green" id="file-progress-bar" role="progressbar" style="width: 70%"></div>
-                    				</div>
-						
-    					</div>
-    					<div class="modal-footer">
-						<a  class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-      						<a  class=" modal-action modal-close waves-effect waves-green btn-flat">Submit</a>
-    					</div>
+            				<div class="determinate green" id="file-progress-bar" role="progressbar"></div>
+                		</div>
+					</div>
+					<div class="modal-footer">
+  						<a class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+                        <a class="waves-effect waves-green btn-flat" id ="image-upload-btn">Submit</a>
+					</div>
   				</div>
-
 				
 				<li><a href="#" data-activates="slide-out" class="waves-effect waves-ripple waves-light button-collapse show-on-large">FILEBOX</a></li>
         			
 				<ul id="slide-out" class="side-nav">
       		
-      					<li  class="black"><a class="white-text">FILEBOX</a></li>
-					
-					<li><a class = "file-item" href="downloads/TT.pdf">TT.pdf</a></li>
-					<li class="divider">
-                            		<li><a class = "file-item" href="downloads/TT.pdf">TT.pdf</a></li>
-					<li class="divider">
+  					<li  class="black"><a class="white-text">FILEBOX</a></li>
 					<li class="fixed black-text">
-                            			<input  type="text" placeholder="Enter File Name..." contenteditable="false" style="width:85%;"></li><li>
+            			<input  type="text" placeholder="Enter File Name..." contenteditable="false" style="width:85%;">
+                    </li>
+                    <li>
 						<a class="waves-effect waves-light btn-flat" style="width:25%;"><i class="material-icons right">send</i></a>
 					</li>
 
                             		
-    				</ul>
+				</ul>
         			
 			</ul>
 			     
@@ -165,21 +142,6 @@ and open the template in the editor.
             
 
             <div id="float-box">
-                <!--div id="file-head">
-                    <span><i class="material-icons">view_agenda</i>Filebox</span>
-                </div>
-                <div id="file-screen">
-                    <div class="file-body">
-                        <ul>
-                            <li><a class = "file-item" href="downloads/TT.pdf">TT.pdf</a></li>
-                            <li><a class = "file-item" href="downloads/TT.pdf">TT.pdf</a></li>
-                        </ul>
-                    </div>
-                    <div id="file-footer">
-                            <input id="file-input" type="text" placeholder="Enter File Name..." contenteditable="false">
-                            <span><button class="btn waves-effect waves-light" id='file-search-btn'><i class="material-icons">send</i></button></span>
-                    </div>
-                </div-->
                 <div id="chat-head">
                     <span><i class="material-icons">textsms</i>CHATBOX</span>
                 </div>
@@ -232,7 +194,8 @@ and open the template in the editor.
           
 						<ul>
             
-							<li><a class="white-text" href="#!">Aditya Desai</a></li>
+                            <li><a class="white-text" >Aditya Desai</a></li>
+							<li><a class="white-text" >Gaurav Shinde</a></li>
             
           
 						</ul>
@@ -248,7 +211,7 @@ and open the template in the editor.
       
 				<div class="container">
       
-					<a class="green-text text-lighten-3" href="index.html">Fr. Coneicao Rodrigues College of Engineering</a>
+					<a class="green-text text-lighten-3">Fr. Coneicao Rodrigues College of Engineering</a>
       
 				</div>
     
@@ -262,14 +225,10 @@ and open the template in the editor.
 			$(".dropdown-button").dropdown({ belowOrigin: true,hover: true });
 			$('.modal-trigger').leanModal();
 			
-		})
-	</script>
-	<script>
+		});
 		// Initialize collapse button
   		$(".button-collapse").sideNav();
-		
-  		
-		
+	
 	</script>
 
 

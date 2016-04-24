@@ -1,13 +1,8 @@
 $(document).ready(function(){
-    $('.myPopUp').hide();
     $('#chat-screen').hide();
-    $('#file-screen').hide();
 
     $('#chat-head').click(function(){
         $('#chat-screen').slideToggle();
-    });
-    $('#file-head').click(function(){
-        $('#file-screen').slideToggle();
     });
 
     $('#chat-send-btn').click(function(){
@@ -25,6 +20,7 @@ $(document).ready(function(){
             $('#chat-input').val("");
         }
     });
+
 });
 
 socket.on('serverMessage', function(data) {

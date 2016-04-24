@@ -1,9 +1,10 @@
 
 var socket = io.connect();
 var username,roomid;
-window.addEventListener('load', function(event) {
+$(document).ready(function(){
+	$('.slider').slider({height:600});
 
-	document.getElementById('joinRoombtn').addEventListener('click', function(){
+	$('#joinRoombtn').click(function(){
 		username=prompt("Enter User Name");
 		if(username!=null&&username!=""){
 			roomid = prompt("Enter Room id");
@@ -16,13 +17,13 @@ window.addEventListener('load', function(event) {
 			}
 		}
 	});
-	document.getElementById('createRoombtn').addEventListener('click', function(){
+	$('#createRoombtn').click(function(){
 		username = prompt("Enter User Name");
 		if(username!=null&&username!=""){
 			socket.emit('createRoom');
 		}
 	});
-	document.getElementById('createProtectedRoombtn').addEventListener('click', function(){
+	$('#createProtectedRoombtn').click(function(){
 		socket.emit('createProtectedRoom');
 	});
 

@@ -1,29 +1,9 @@
-//FILE UPLOAD
-$('#openFileUpload').click(function(){
-  if($('#imageUploadPopUp').is(":visible"))
-    $('#imageUploadPopUp').hide();
-  $('#fileUploadPopUp').slideToggle();
-});
+$('#file-upload-btn').on('click', function(){
 
-$('#close-file-btn').click(function(){
-  if($('#fileUploadPopUp').is(":visible")){
-    $('#fileUploadPopUp').slideToggle();
-    $('#file-progress-bar').text('0%');
-    $('#file-progress-bar').width('0%');
-  }
-});
-
-$('#upload-file-btn').on('click', function (){
-    $('#upload-file-input').click();
-    $('#file-progress-bar').text('0%');
-    $('#file-progress-bar').width('0%');
-});
-
-$('#upload-file-input').on('change', function(){
 
   socket.emit('preFileUpload',{roomid:roomid});
 
-  var files = $(this).get(0).files;
+  var files = $('#upload-file-input').get(0).files;
 
   if (files.length > 0){
     // create a FormData object which will be sent as the data payload in the
@@ -66,6 +46,7 @@ $('#upload-file-input').on('change', function(){
             // once the upload reaches 100%, set the progress bar text to done
             if (percentComplete === 100) {
               $('#file-progress-text').text('File upload : Done');
+              socket.emit('fileSent',{filename: files[0].name, roomid:roomid});
             }
           }
         }, false);
@@ -79,36 +60,14 @@ $('#upload-file-input').on('change', function(){
 
 
 //IMAGE UPLOAD
-$('#openImageUpload').click(function(){
-  if($('#fileUploadPopUp').is(":visible")){
-    $('#fileUploadPopUp').hide();
-  }
-  $('#imageUploadPopUp').slideToggle();
-});
-
-
-$('#upload-image-btn').click(function(){
-    $('#upload-image-input').click();
-    $('#image-progress-text').text('0%');
-    $('#image-progress-bar').width('0%');
-});
-
-$('#close-image-btn').click(function(){
-    if($('#imageUploadPopUp').is(":visible")){
-      $('#imageUploadPopUp').slideToggle();
-      $('#image-progress-text').text('0%');
-      $('#image-progress-bar').width('0%');
-    }
-});
-
-$('#upload-image-input').on('change', function(){
+$('#image-upload-btn').on('click', function(){
 
   socket.emit('preImageUpload',{roomid:roomid});
 
-  var files = $(this).get(0).files;
+  var files = $('#upload-image-input').get(0).files;
 
   if(files.length > 0){
-    if(files.length <= 1){
+    if(files.length <= 1 && files[0].type.match('image.*')){
       console.log(files[0]);
       var formData = new FormData();
       formData.append('uploads', files[0], files[0].name);

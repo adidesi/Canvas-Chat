@@ -11,6 +11,10 @@
 	background: white;
 	display: block;
 	cursor: crosshair;
-	
+}
+
+#picker{
+	display: block;
+	cursor: pointer;
 }
 

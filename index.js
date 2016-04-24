@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var fs = require('fs');
 var formidable = require('formidable');
 var shortid = require('shortid');
+var util = require('util');
 
 var port = process.env.PORT || 20203;
 
@@ -23,18 +24,18 @@ app.use('/font-awesome', express.static(path.join(__dirname,'./public','/font-aw
 app.use('/js', express.static(path.join(__dirname,'./public','/js')));
 app.use('/img', express.static(path.join(__dirname,'./public','/img')));
 app.use('/downloads', express.static(path.join(__dirname,'./public','/uploads')));
+app.use('/picts', express.static(path.join(__dirname,'./public','/picts')));
 
 //mongoose Models
-mongoose.model('roomid', {room: Number, roomcount:  Number});
-mongoose.model('grouplist', {content: String});
-
+var RoomList = mongoose.model('roomlist', {_id: String, roomcount:  Number});
+var MapList = mongoose.model('maplist', {_id :String, room : String});
 
 // Initialize appication with routes / <-(that means root of the application)
 app.get('/', function(req, res){
 	res.sendFile('home-page.html',{root:path.join(__dirname,'./public')});
 });
 app.get('/room', function(req, res){
-	res.sendFile('custom-room.html',{root:path.join(__dirname,'./public')});
+	res.sendFile('room.html',{root:path.join(__dirname,'./public')});
 });
 app.post('/uploadfile', function(req, res){
   // create an incoming form object
@@ -82,23 +83,13 @@ app.post('/uploadimage', function(req, res){
   // parse the incoming request containing the form data
   form.parse(req);
 });
-app.get('/roomid',function(req,res){
-  mongoose.model('roomid').find(function(err,results){
-    res.send(results);
-  });
-});
-app.get('/grouplist',function(req,res){
-  mongoose.model('grouplist').find(function(err,results){
-    res.send(results);
-  });
-});
 
 //Connection to mongoDB
 mongoose.connect('mongodb://127.0.0.1/canvaschatlist', function(err, db) {
     // connection code goes inside
     if(err) throw err;
-	console.log("Connected to mongoDB successfully!");
-	io.on('connection', function(socket){
+	    console.log("Connected to mongoDB successfully!");
+    io.on('connection', function(socket){
 		console.log("User connected with socketid: " + socket.id);
     
     socket.on('mousemove', function (data) {
@@ -109,10 +100,19 @@ mongoose.connect('mongodb://127.0.0.1/canvaschatlist', function(err, db) {
     socket.on('canvasClear', function (data) {
     // This line sends the event (broadcasts it) to everyone including the originating client.
       io.in(data.roomid).emit('clearCanvas', data);
-
     });
 
     socket.on('joinRoom',function(data){
+      RoomList.update({_id : data.roomid},{$inc : {roomcount : 1}},function(err){});
+      
+      var newMap = new MapList({
+        _id : socket.id,
+        room : data.roomid
+      });
+      newMap.save(function(err,newRoom){
+        if(err) return console.log(err);
+      });
+
       console.log('joinRoom data : ' + data.roomid);
       socket.emit('roomJoined', data);
       socket.join(data.roomid);
@@ -122,8 +122,13 @@ mongoose.connect('mongodb://127.0.0.1/canvaschatlist', function(err, db) {
       var roomid = shortid.generate();
       console.log('Room Created : ' + roomid);
       //Increment room and roomcount from roomid
-      //TODO MONGOO
-
+      var newRoom = new RoomList({
+        _id : roomid,
+        roomcount : 0
+      });
+      newRoom.save(function(err,newRoom){
+        if(err) return console.log(err);
+      });
       //log and send the current roomid to the user
 
       socket.emit('roomCreated', {roomid : roomid});
@@ -131,7 +136,6 @@ mongoose.connect('mongodb://127.0.0.1/canvaschatlist', function(err, db) {
 
     socket.on('imageSent', function (data) {
       console.log("recieved an image : "+data.filename);
-
       fs.stat(path.join(__dirname, './public', '/uploads', '/canvasimages', data.filename), function(err,stats){
         if(err){
           console.log(err);
@@ -153,15 +157,31 @@ mongoose.connect('mongodb://127.0.0.1/canvaschatlist', function(err, db) {
     socket.on('clientMessage',function(data){
       socket.broadcast.to(data.roomid).emit('serverMessage', data);
     });
+    
+    socket.on('fileSent',function(data){
+      console.log("recieved an image : "+data.filename);
+    });
 
-    socket.on('disconnect',function(){
+    socket.on('disconnect',function(err){
+      MapList.find({_id : socket.id},function(err,tempMap){
+        if(tempMap.length > 0){
+          console.log('there   :  '+tempMap[0].room);
+          RoomList.update({_id : tempMap[0].room},{$inc : {roomcount : -1}},function(err){});
+          RoomList.find({_id : tempMap[0].room},function(err,tempRoom){
+            if(tempRoom.length > 0 && tempRoom[0].roomcount == 0){
+              console.log('here');
+              tempRoom[0].remove();
+            }
+          });
+          tempMap[0].remove();
+        }
+      });
       console.log('User is disconnected : '+socket.id);
-      // console.log(io.sockets.manager.roomClients[socket.id]);
     });
 
     socket.on('mistrial',function(){
       console.log('mishere');
     });
+});
 
-	});
 });
