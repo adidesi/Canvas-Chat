@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+	<head>
+		<title>Chat Room</title>
+		<!--Import Google Icon Font-->
+		<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+		<!--Import materialize.css-->
+		<link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+
+		<!-- links to our css files -->
+		<link type = "text/css" rel="stylesheet" href="css/room.css">
+		<link type = "text/css" rel="stylesheet" href="css/chatCSS.css">
+
+		<!--Let browser know website is optimized for mobile-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+		<!--Import jQuery before materialize.js-->
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+		<script type="text/javascript" src="js/materialize.min.js"></script>
+
+		<!-- links to our javascript files -->
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="js/room.js"></script>
+		<script src="js/chatJS.js"></script>
+		<script src="js/colorJS.js"></script>
+	</head>
+	<body background="picts/backwood.jpg">
+
+		<nav class="green">
+			<div class="nav-wrapper">
+				
+				<ul id="nav-mobile" class="left hide-on-med-and-down">
+					<li><a href="/"><b>CANVAS CHAT</b></a></li>
+					<li><a id="btnClear">CLEAR</a></li>
+					<li>
+						<a id="btnRadius" class="radList dropdown-button" data-constrainwidth="false" data-activates="radiusdropdown">RADIUS</a>
+						<ul id="radiusdropdown" class="dropdown-content">
+							<li><a id ="incrRadius">+</a></li>
+							<li><span id="radSpan">10</span></li>
+							<li><a id ="decrRadius">-</a></li>
+						</ul>
+					</li>
+					<li>
+						<a id="btnEraser" class="eraList dropdown-button"  data-activates="eraserdropdown">ERASER</a>
+						<ul id="eraserdropdown" class="dropdown-content">
+							<li><a id ="incrEraser">+</a></li>
+							<li><span id="erasSpan">10</span></li>
+							<li><a id ="decrEraser">-</a></li>
+						</ul>
+					</li>
+					<li><a id="btnColor" class="colorList dropdown-button" data-constrainwidth="false" data-activates="colordropdown">COLORS</a>
+						<ul id = "colordropdown" class="dropdown-content" >
+							<li>
+								<div class="colorpicker">
+									<canvas id="picker" width="300" height="300"></canvas>
+								</div>
+							</li>
+						</ul>
+					</li>
+					<li><a id="btnSave">SAVE</a></li>
+					<li> <a id="openFileUpload" href="#fileuploadmodal" class="modal-trigger">UPLOAD FILE</a></li>
+					<!-- Modal Structure -->
+					<div id="fileuploadmodal" class="modal">
+						<div class="modal-content green-text">
+							<h4>Upload File</h4>
+							<br>
+							<div class="file-field input-field">
+								<div class="btn green">
+									<span>File</span>
+									<input  id ="upload-file-input" type="file" name="uploads[]" multiple>
+								</div>
+								<div class="file-path-wrapper">
+									<input class="file-path validate" type="text" placeholder="Upload one or more files">
+								</div>
+							</div>
+							<div class="progress light-green lighten-2">
+								<div class="determinate green" id="file-progress-bar" role="progressbar"></div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<a  class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+							<a  class="waves-effect waves-green btn-flat" id ="file-upload-btn">Submit</a>
+						</div>
+					</div>
+					<li> <a id="openImageUpload" href="#imageuploadmodal" class="modal-trigger">UPLOAD IMAGE</a></li>
+					<!-- Modal Structure -->
+					<div id="imageuploadmodal" class="modal">
+						<div class="modal-content green-text">
+							<h4>Upload Image</h4>
+							<br>
+							<div class="file-field input-field">
+								<div class="btn green">
+									<span>Image</span>
+									<input id = "upload-image-input" type="file" name="uploads[]" accept="image/*">
+								</div>
+								<div class="file-path-wrapper">
+									<input class="file-path validate" type="text" placeholder="Upload one or more files">
+								</div>
+							</div>
+							<div class="progress light-green lighten-2">
+								<div class="determinate green" id="file-progress-bar" role="progressbar"></div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<a class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+							<a class="waves-effect waves-green btn-flat" id ="image-upload-btn">Submit</a>
+						</div>
+					</div>
+					<li><a href="#" data-activates="slide-out" class="waves-effect waves-ripple waves-light button-collapse show-on-large">FILEBOX</a></li>
+					<ul id="slide-out" class="side-nav">
+						<li  class="black"><a class="white-text">FILEBOX</a></li>
+						<li class="fixed black-text">
+							<input  type="text" placeholder="Enter File Name..." contenteditable="false" style="width:85%;">
+						</li>
+						<li>
+							<a class="waves-effect waves-light btn-flat" style="width:25%;"><i class="material-icons right">send</i></a>
+						</li>
+					</ul>
+				</ul>
+			</div>
+		</nav>
+		<br>
+		<div>
+			<canvas id = "paper"  width="900" height="600">
+				Your browser doesnt support Canvas
+			</canvas>
+			<div id="float-box">
+				<div id="chat-head">
+					<span><i class="material-icons">textsms</i>CHATBOX</span>
+				</div>
+				<div id="chat-screen">
+					<div id="chat-body">
+						<div class= "msgIN">
+							<div class="msgHEAD">
+								SHE
+							</div><div class="msgBODY">
+							This is A
+						</div>
+					</div>
+					<div class= "msgOUT">
+						<div class = "msgHEAD">
+							HE
+						</div>
+						<div class = "msgBODY">
+							This is A
+						</div>
+					</div>
+				</div>
+				<div id="chat-footer">
+					<ul><li class="divider"></ul>
+					<input id="chat-input" type="text" placeholder="Type your message here..." contenteditable="false">
+					<button class="btn waves-effect waves-light" id='chat-send-btn'><i class="material-icons">send</i></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="js/upload.js"></script>
+	<footer class="page-footer green">
+		<div class="container">
+			<div class="row">
+				<div class="col l6 s12">
+					<h5 class="white-text">Canvas Chat</h5>
+					<p class="grey-text text-lighten-4">This is a college project. Any amount would help support and continue development on this project and is greatly appreciated.</p>
+				</div>
+				<div class="col l3 s12">
+					<h5 class="white-text">Made by</h5>
+					<ul>
+						<li><a class="white-text" >Aditya Desai</a></li>
+						<li><a class="white-text" >Gaurav Shinde</a></li>
+					</ul>
+				</div>
+			</div>	
+		</div>
+		<div class="footer-copyright">
+			<div class="container">
+				<a class="green-text text-lighten-3">Fr. Conceicao Rodrigues College of Engineering</a>
+			</div>
+		</div>
+	</footer>
+	</body>
+</html>
